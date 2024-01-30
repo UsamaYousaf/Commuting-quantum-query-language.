@@ -3,8 +3,8 @@ from sympy.logic.boolalg import Or, And, Not, to_dnf
 from schmitt_weighting import apply_weights
 
 # Define variables and weights
-variables = symbols('a b c d')
-weights = symbols('w_a w_b w_c w_d')
+variables = symbols('a b c d e')
+weights = symbols('w_a w_b w_c w_d w_e')
 weight_map = dict(zip(variables, weights))
 def user_input():
     # Create dictionaries to store the values of the variables and weights
@@ -57,12 +57,13 @@ def find_overlaps(expr):
 
     common_attributes = set()
 
-    # for i in range(len(disjunctions)):
-    #     for j in range(i+1, len(disjunctions)):
-    #         common_attributes |= set(disjunctions[i].atoms()) & set(disjunctions[j].atoms())
     for i, conj in enumerate(expr.args):
         for j, other_conj in enumerate(expr.args[i+1:], i+1):
             common_attributes |= set(literal for literal in conj.args if literal in other_conj.args)
+
+    for attr in common_attributes:
+        if isinstance(attr, Not) and attr.args[0] in expr.args:
+            common_attributes.remove(attr)
 
 
     return common_attributes
@@ -95,11 +96,13 @@ if __name__ == "__main__":
     # Example usage
     #input_expr = user_input()
     #print("Original Expression:", input_expr)
-    input_expr1 = Or(And(variables[0],variables[1]), And(variables[0],variables[2]), And(variables[1],variables[2]))
-    exper= apply_weights(input_expr1,weight_map)
-    print("Exper from schmitt weighting:", exper)
+    input_expr1 = Or(And(variables[0], variables[1]), And(Not(variables[1]), variables[2]), And(variables[2], variables[3]))
+
+    print("Original Expression is:", input_expr1)
+    # exper = apply_weights(input_expr1, weight_map)
+    # print("Experession with weights added:", exper)
     # Step 1: Transform to disjunctive normal form
-    dnf_expr = disjunctive_normal_form(exper)
+    dnf_expr = disjunctive_normal_form(input_expr1)
     print("Disjunctive Normal Form:", dnf_expr)
 
     # Step 2: Simplify expression

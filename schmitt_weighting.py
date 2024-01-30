@@ -20,6 +20,6 @@ def apply_weights(expr, weight_map):
         return expr
 
 # Test the function with the expression
-input_expr = Or(variables[0], And(variables[1], variables[2]))
-weighted_expr = apply_weights(input_expr, weight_map)
-print("Weighted expression is:", weighted_expr)
+# input_expr = Or(variables[0], And(variables[1], variables[2]))
+# weighted_expr = apply_weights(input_expr, weight_map)
+# print("Weighted expression is:", weighted_expr)
