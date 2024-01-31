@@ -15,7 +15,7 @@ def user_input():
     expr = sympify(expr_str)
 
     # Extract variables from the expression
-    variables = expr.free_symbols
+    variables = sorted(expr.free_symbols, key=lambda x: str(x))
 
     # Map variables to weight symbols
     weights = symbols(' '.join([f'w_{var}' for var in variables]))
@@ -30,7 +30,7 @@ def user_input():
         var_values[var] = value
     # Get values for weights
     weight_values = {}
-    for weight in weights:
+    for weight in sorted(weights, key=lambda x: str(x)):
         value = float(
             input(f"Please enter a value for {weight} (between [0,1]): "))
         weight_values[weight] = value
