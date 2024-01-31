@@ -4,11 +4,9 @@ from schmitt_weighting import apply_weights
 from find_overlaps import find_overlaps
 from distributive_rule import factor_out_common_terms
 from resolve_overlaps import resolve_overlaps
-
+from sympy import *
+from evaluation import transform_cqql
 # Define variables and weights
-variables = symbols('a b c d e')
-weights = symbols('w_a w_b w_c w_d w_e')
-weight_map = dict(zip(variables, weights))
 
 
 def user_input():
@@ -68,7 +66,7 @@ if __name__ == "__main__":
     print("Weight map here", weight_map)
     exper = apply_weights(sympify(expr), weight_map)
 
-    print("Experession from schmitt weighting:", exper)
+    print("\n \nExpression after applying Schmitt weighting:", exper,)
     # exper = apply_weights(input_expr1, weight_map)a
     # print("Experession with weights added:", exper)
     # Step 1: Transform to disjunctive normal form
@@ -86,3 +84,15 @@ if __name__ == "__main__":
     # Step 3: Eliminate overlaps
     expr_without_overlaps = eliminate_overlaps(simplified_expr)
     print("Expression without Overlaps:", expr_without_overlaps)
+    transformed_expr = transform_cqql(expr_without_overlaps)
+    # Convert string to SymPy expression
+    transformed_expra = sympify(transformed_expr)
+    print("Transformed Expression:", transformed_expr)
+
+    # Combine variable and weight values for evalf
+    all_values = {**var_values, **weight_values}
+    print("All values for evaluation:", all_values)
+
+    # Evaluate the expression numerically
+    numerical_evaluation = transformed_expr.evalf(subs=all_values)
+    print("\n \n Final Evaluation:", numerical_evaluation)
