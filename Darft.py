@@ -48,30 +48,33 @@ def eliminate_overlaps(expr):
   while True:
     common_attributes = find_overlaps(expr)
     if common_attributes:
-      o = common_attributes.pop()
-      expr = resolve_overlaps(expr, o)
+        o = common_attributes.pop()
+        expr = resolve_overlaps(expr, o)
     break
   return expr
 
 def find_overlaps(expr):
 
     common_attributes = set()
+    attribute_with_nega = set()
 
     for i, conj in enumerate(expr.args):
         for j, other_conj in enumerate(expr.args[i+1:], i+1):
             common_attributes |= set(literal for literal in conj.args if literal in other_conj.args)
 
-    for attr in common_attributes:
-        if isinstance(attr, Not) and attr.args[0] in expr.args:
-            common_attributes.remove(attr)
+    for attr in common_attributes.copy():
+        for conj in expr.args:
+            if (Not(attr) in conj.args) or (isinstance(attr, Not) and attr.args[0] in conj.args):
+                attribute_with_nega.add(attr)
+                break
 
+    common_attributes -= attribute_with_nega
 
     return common_attributes
 
 def resolve_overlaps(expr, o):
   disjunctions = expr.args if isinstance(expr, Or) else expr
   print(f"disjunctions: {disjunctions}")
-
 
   new_dnf = []
   for conj in disjunctions:
@@ -99,10 +102,10 @@ if __name__ == "__main__":
     input_expr1 = Or(And(variables[0], variables[1]), And(Not(variables[1]), variables[2]), And(variables[2], variables[3]))
 
     print("Original Expression is:", input_expr1)
-    # exper = apply_weights(input_expr1, weight_map)
-    # print("Experession with weights added:", exper)
+    exper = apply_weights(input_expr1, weight_map)
+    print("Experession with weights added:", exper)
     # Step 1: Transform to disjunctive normal form
-    dnf_expr = disjunctive_normal_form(input_expr1)
+    dnf_expr = disjunctive_normal_form(exper)
     print("Disjunctive Normal Form:", dnf_expr)
 
     # Step 2: Simplify expression
