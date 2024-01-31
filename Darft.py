@@ -69,7 +69,6 @@ def find_overlaps(expr):
                 break
 
     common_attributes -= attribute_with_nega
-
     return common_attributes
 
 def resolve_overlaps(expr, o):
