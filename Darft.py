@@ -1,6 +1,9 @@
 from sympy import simplify,symbols, lambdify, simplify_logic
 from sympy.logic.boolalg import Or, And, Not, to_dnf
 from schmitt_weighting import apply_weights
+from find_overlaps import find_overlaps
+from distributive_rule import factor_out_common_terms
+from resolve_overlaps import resolve_overlaps
 
 # Define variables and weights
 variables = symbols('a b c d e')
@@ -50,61 +53,61 @@ def eliminate_overlaps(expr):
     if common_attributes:
         o = common_attributes.pop()
         expr = resolve_overlaps(expr, o)
-    break
+        expr = factor_out_common_terms(expr)
+
+        # Check common attribute in combined terms
+        # if combined_terms:
+        #     common_attributes_combined = find_overlaps(combined_terms)
+        #     print(common_attributes_combined)
+        #     if common_attributes_combined:
+        #         o_combined = common_attributes_combined.pop()
+        #         combined_terms = resolve_overlaps(combined_terms, o_combined)
+        #         combined_terms = factor_out_common_terms(combined_terms)[0]
+
+        # expr = update_expr_with_new_combined_terms(expr, combined_terms)
+    else:
+        break
   return expr
 
-def find_overlaps(expr):
+def update_expr_with_new_combined_terms(expr, combined_terms):
+    # Convert expr to a list of arguments
 
-    common_attributes = set()
-    attribute_with_nega = set()
+    # Convert expr to a list of arguments
+    expr_args = list(expr.args)
+    print(expr_args)
 
-    for i, conj in enumerate(expr.args):
-        for j, other_conj in enumerate(expr.args[i+1:], i+1):
-            common_attributes |= set(literal for literal in conj.args if literal in other_conj.args)
-
-    for attr in common_attributes.copy():
-        for conj in expr.args:
-            if (Not(attr) in conj.args) or (isinstance(attr, Not) and attr.args[0] in conj.args):
-                attribute_with_nega.add(attr)
+    # Find the index of the old combined_terms in expr_args
+    index = None
+    for i, term in enumerate(expr_args):
+        if isinstance(term, And):
+            if set(term.args) == set(combined_terms.args):
+                index = i
                 break
 
-    common_attributes -= attribute_with_nega
-    return common_attributes
+    # Replace the old combined_terms with the new combined_terms
+    expr_args[index] = combined_terms
 
-def resolve_overlaps(expr, o):
-  disjunctions = expr.args if isinstance(expr, Or) else expr
-  print(f"disjunctions: {disjunctions}")
+    # Construct the new expr from expr_args
+    new_expr = Or(*expr_args)
 
-  new_dnf = []
-  for conj in disjunctions:
-    print(f"Processing conjunction: {conj}")
-    if o in conj.free_symbols:
-      print(f"Conjunctions {conj} contains {o}")
-      new_dnf.append(conj)
-    else:
-      print(f"Conjunctions {conj} does not contain {o}")
-      new_dnf.append(And(o, conj))
-      new_dnf.append(And(Not(o), conj))
+    return new_expr
 
-  print(f"New DNF: {new_dnf}")
 
-  # Create a new Or object directly using the *args syntax
-  expr = Or(*new_dnf)
 
-  return expr
+
 
 
 if __name__ == "__main__":
     # Example usage
     #input_expr = user_input()
     #print("Original Expression:", input_expr)
-    input_expr1 = Or(And(variables[0], variables[1]), And(Not(variables[1]), variables[2]), And(variables[2], variables[3]))
+    input_expr1 = And(Or(variables[0], variables[1]), Or(variables[0], variables[2]), Or(variables[1], variables[2]))
 
     print("Original Expression is:", input_expr1)
-    exper = apply_weights(input_expr1, weight_map)
-    print("Experession with weights added:", exper)
+    #exper = apply_weights(input_expr1, weight_map)
+    #print("Experession with weights added:", exper)
     # Step 1: Transform to disjunctive normal form
-    dnf_expr = disjunctive_normal_form(exper)
+    dnf_expr = disjunctive_normal_form(input_expr1)
     print("Disjunctive Normal Form:", dnf_expr)
 
     # Step 2: Simplify expression
@@ -113,12 +116,13 @@ if __name__ == "__main__":
 
     # Find an overlaps
     overlaps = find_overlaps(simplified_expr)
-    print("An overlap of this logical expression is:", overlaps)
 
     # Step 3: Eliminate overlaps
     expr_without_overlaps = eliminate_overlaps(simplified_expr)
     print("Expression without Overlaps:", expr_without_overlaps)
 
+
     # Step 4: Transform innermost disjunctions to conjunctions and negations
-    final_result = expr_without_overlaps.to_anf()
-    print("Final Result after applying de Morgan law:", final_result)
+    # final_result = expr_without_overlaps.to_anf()
+    # print("Final Result after applying de Morgan law:", final_result)
+
