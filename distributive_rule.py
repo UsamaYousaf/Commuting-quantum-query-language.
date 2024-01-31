@@ -10,8 +10,12 @@ def factor_out_common_terms(expr):
         return expr
 
     # Identify common attributes
-    common_symbols = set.intersection(*(set(arg.free_symbols) for arg in expr.args if
-                                        isinstance(arg, And) and not any(isinstance(a, Not) for a in arg.args)))
+    sets = [set(arg.free_symbols) for arg in expr.args if
+            isinstance(arg, And) and not any(isinstance(a, Not) for a in arg.args)]
+    if sets:
+        common_symbols = set.intersection(*sets)
+    else:
+        common_symbols = set()
 
     # Separate terms with and without common symbols
     terms_with_common = []
