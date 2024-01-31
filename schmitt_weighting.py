@@ -1,12 +1,14 @@
 from sympy import symbols, And, Or, Not
 
-# Define the variables and weights
-variables = symbols('a b c d')
-weights = symbols('w_a w_b w_c w_d')
+# # Define the variables and weights
+# variables = symbols('a b c d e')
+# weights = symbols('w_a w_b w_c w_d w_e')
 
-weight_map = dict(zip(variables, weights))
+# weight_map = dict(zip(variables, weights))
 
 # Function to apply weights to a logical expression
+
+
 def apply_weights(expr, weight_map):
     if isinstance(expr, And):
         # Apply w⊤ formula for And operation
@@ -19,7 +21,11 @@ def apply_weights(expr, weight_map):
     else:
         return expr
 
+
 # Test the function with the expression
-input_expr = Or(variables[0], And(variables[1], variables[2]))
-weighted_expr = apply_weights(input_expr, weight_map)
-print("Weighted expression is:", weighted_expr)
+# input_expr1 = Or(And(variables[0], variables[1]),
+#                  And(variables[0], variables[2]))
+# input_expr2 = And(variables[0], Or(variables[1], variables[2]))
+# input_expr=And(variables[0],variables[1])
+# weighted_expr1 = apply_weights(input_expr, weight_map)
+# print("Weighted expression is:", weighted_expr1,)
