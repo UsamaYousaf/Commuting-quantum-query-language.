@@ -93,15 +93,11 @@ def update_expr_with_new_combined_terms(expr, combined_terms):
     return new_expr
 
 
-
-
-
-
 if __name__ == "__main__":
     # Example usage
     #input_expr = user_input()
     #print("Original Expression:", input_expr)
-    input_expr1 = And(Or(variables[0], variables[1]), Or(variables[0], variables[2]), Or(variables[1], variables[2]))
+    input_expr1 = Or(And(variables[0], variables[1]), And(variables[2], variables[3]), And(variables[3], variables[4]))
 
     print("Original Expression is:", input_expr1)
     #exper = apply_weights(input_expr1, weight_map)
