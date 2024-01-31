@@ -26,13 +26,13 @@ def user_input():
     # Get the values for the variables from the user
     for var in variables:
         value = float(
-            input(f"Please enter a value for {var} (between [0,1]): "))
+            input(f"Please enter value for {var} (between [0,1]): "))
         var_values[var] = value
     # Get values for weights
     weight_values = {}
     for weight in sorted(weights, key=lambda x: str(x)):
         value = float(
-            input(f"Please enter a value for {weight} (between [0,1]): "))
+            input(f"Please enter value for {weight} (between [0,1]): "))
         weight_values[weight] = value
 
     return expr_str, var_values, weight_values, weight_map
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     print("Expression without Overlaps:", expr_without_overlaps)
     transformed_expr = transform_cqql(expr_without_overlaps)
     # Convert string to SymPy expression
-    transformed_expra = sympify(transformed_expr)
+    transformed_expression = sympify(transformed_expr)
     print("Transformed Expression:", transformed_expr)
 
     # Combine variable and weight values for evalf
@@ -94,5 +94,5 @@ if __name__ == "__main__":
     print("All values for evaluation:", all_values)
 
     # Evaluate the expression numerically
-    numerical_evaluation = transformed_expr.evalf(subs=all_values)
+    numerical_evaluation = transformed_expression.evalf(subs=all_values)
     print("\n \n Final Evaluation:", numerical_evaluation)
