@@ -1,1 +1,0 @@
-# Commuting-quantum-query-language.
