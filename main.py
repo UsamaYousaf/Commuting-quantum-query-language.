@@ -55,49 +55,15 @@ def eliminate_overlaps(expr):
         expr = resolve_overlaps(expr, o)
         expr = factor_out_common_terms(expr)
 
-        # Check common attribute in combined terms
-        # if combined_terms:
-        #     common_attributes_combined = find_overlaps(combined_terms)
-        #     print(common_attributes_combined)
-        #     if common_attributes_combined:
-        #         o_combined = common_attributes_combined.pop()
-        #         combined_terms = resolve_overlaps(combined_terms, o_combined)
-        #         combined_terms = factor_out_common_terms(combined_terms)[0]
-
-        # expr = update_expr_with_new_combined_terms(expr, combined_terms)
     else:
         break
   return expr
 
-def update_expr_with_new_combined_terms(expr, combined_terms):
-    # Convert expr to a list of arguments
-
-    # Convert expr to a list of arguments
-    expr_args = list(expr.args)
-    print(expr_args)
-
-    # Find the index of the old combined_terms in expr_args
-    index = None
-    for i, term in enumerate(expr_args):
-        if isinstance(term, And):
-            if set(term.args) == set(combined_terms.args):
-                index = i
-                break
-
-    # Replace the old combined_terms with the new combined_terms
-    expr_args[index] = combined_terms
-
-    # Construct the new expr from expr_args
-    new_expr = Or(*expr_args)
-
-    return new_expr
-
 
 if __name__ == "__main__":
-    # Example usage
     #input_expr = user_input()
     #print("Original Expression:", input_expr)
-    input_expr1 = Or(And(variables[0], variables[1]), And(variables[2], variables[3]), And(variables[3], variables[4]))
+    input_expr1 = Or(And(variables[0], variables[1]), And(variables[0], variables[2]), And(variables[1], variables[2]))
 
     print("Original Expression is:", input_expr1)
     #exper = apply_weights(input_expr1, weight_map)
@@ -112,13 +78,11 @@ if __name__ == "__main__":
 
     # Find an overlaps
     overlaps = find_overlaps(simplified_expr)
+    print("The first overlap of this expression is:", overlaps)
 
     # Step 3: Eliminate overlaps
     expr_without_overlaps = eliminate_overlaps(simplified_expr)
     print("Expression without Overlaps:", expr_without_overlaps)
 
 
-    # Step 4: Transform innermost disjunctions to conjunctions and negations
-    # final_result = expr_without_overlaps.to_anf()
-    # print("Final Result after applying de Morgan law:", final_result)
 

@@ -12,6 +12,7 @@ def factor_out_common_terms(expr):
     # Identify common attributes
     common_symbols = set.intersection(*(set(arg.free_symbols) for arg in expr.args if
                                         isinstance(arg, And) and not any(isinstance(a, Not) for a in arg.args)))
+
     # Separate terms with and without common symbols
     terms_with_common = []
     terms_without_common = []
@@ -29,8 +30,7 @@ def factor_out_common_terms(expr):
     else:
         combined_terms_with_common = None
 
-
-
+    # Check overlap on combined terms
     if combined_terms_with_common:
         common_symbols_part = And(*common_symbols)
         other_part = Or(*[arg for arg in combined_terms_with_common.args if arg not in common_symbols])
@@ -42,6 +42,7 @@ def factor_out_common_terms(expr):
             other_part = factor_out_common_terms(other_part)
 
         combined_terms_with_common = And(common_symbols_part, other_part)
+
     # Construct the final expression
     if combined_terms_with_common and terms_without_common:
         final_expr = Or(combined_terms_with_common, *terms_without_common)
