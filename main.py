@@ -51,11 +51,12 @@ def eliminate_overlaps(expr):
         common_attributes = find_overlaps(expr)
         if common_attributes:
             o = common_attributes.pop()
-            expr = resolve_overlaps(expr, o)
-            expr = factor_out_common_terms(expr)
-
+            expr_resolve = resolve_overlaps(expr, o)
+            expr_factor = factor_out_common_terms(expr_resolve, {o})
         else:
             break
+
+        return expr_factor
     return expr
 
 
@@ -65,8 +66,7 @@ if __name__ == "__main__":
 
     print("Weight map here", weight_map)
     exper = apply_weights(sympify(expr), weight_map)
-
-    print("\n \nExpression after applying Schmitt weighting:", exper,)
+    print("\n \nExpression after applying Schmitt weighting:", exper)
     # exper = apply_weights(input_expr1, weight_map)a
     # print("Experession with weights added:", exper)
     # Step 1: Transform to disjunctive normal form
@@ -79,12 +79,12 @@ if __name__ == "__main__":
 
     # Find an overlaps
     overlaps = find_overlaps(simplified_expr)
-    print("The first overlap of this expression is:", overlaps)
 
     # Step 3: Eliminate overlaps
     expr_without_overlaps = eliminate_overlaps(simplified_expr)
     print("Expression without Overlaps:", expr_without_overlaps)
     transformed_expr = transform_cqql(expr_without_overlaps)
+
     # Convert string to SymPy expression
     transformed_expression = sympify(transformed_expr)
     print("Transformed Expression:", transformed_expr)
@@ -96,3 +96,6 @@ if __name__ == "__main__":
     # Evaluate the expression numerically
     numerical_evaluation = transformed_expression.evalf(subs=all_values)
     print("\n \n Final Evaluation:", numerical_evaluation)
+
+
+
