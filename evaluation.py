@@ -9,12 +9,12 @@ def transform_cqql(expr_str):
     def transform(expr):
         if isinstance(expr, And):
             # Replace And with multiplication
-            return '*'.join(transform(arg) for arg in expr.args)
+            return '(' + '*'.join(transform(arg) for arg in expr.args) + ')'
         elif isinstance(expr, Or):
             # Replace Or with addition and subtraction
             if all(isinstance(arg, Symbol) for arg in expr.args):
                 terms = [transform(arg) for arg in expr.args]
-                return '+'.join(terms)
+                return '(' + '+'.join(terms) + ')'
             else:
                 terms = [transform(arg) for arg in expr.args]
                 return '(' + ' + '.join(terms) + ' - ' + '*'.join(terms) + ')'
