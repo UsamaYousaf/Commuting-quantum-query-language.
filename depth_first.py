@@ -5,7 +5,8 @@ def print_depth_first(expr, depth=0):
         # For each argument in the expression, go deeper first
         for arg in expr.args:
             print_depth_first(arg, depth + 1)
-        # Print the current expression after printing deeper levels
+        # Print the current expression after printing deeper levels 
+        #print
         print(" " * depth * 2 + str(expr))
     elif isinstance(expr, Symbol):
         # Base case: just print the symbol
